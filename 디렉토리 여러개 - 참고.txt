@@ -1,0 +1,76 @@
+[C#]
+    string[] fileEntries = Directory.GetFiles(".", "*.*", SearchOption.AllDirectories); 
+    foreach (string fileName in fileEntries) 
+    { 
+        Console.WriteLine(fileName);   // path까지 출력
+        Console.WriteLine(Path.GetFileName(fileName));  // 파일명만 출력
+    }
+
+[C언어]
+https://stackoverflow.com/questions/8436841/how-to-recursively-list-directories-in-c-on-linux
+#include <unistd.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <stdio.h>
+#include <string.h>
+
+void listdir(const char *name, int indent)
+{
+    DIR *dir;
+    struct dirent *entry;
+
+    if (!(dir = opendir(name)))
+        return;
+
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_DIR) {
+            char path[1024];
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+                continue;
+            snprintf(path, sizeof(path), "%s/%s", name, entry->d_name);
+            printf("%*s[%s]\n", indent, "", entry->d_name);
+            listdir(path, indent + 2);
+        } else {
+            printf("%*s- %s\n", indent, "", entry->d_name);
+        }
+    }
+    closedir(dir);
+}
+
+int main(void) {
+    listdir(".", 0);
+    return 0;
+}
+
+[JAVA]
+https://stackoverflow.com/questions/2056221/recursively-list-files-in-java
+package com.lgcns.test;
+
+import java.io.File;
+
+public class DIR_TEST {
+	
+    public static void walk( String path ) {
+
+        File root = new File( path );
+        File[] list = root.listFiles();
+
+        if (list == null) return;
+
+        for ( File f : list ) {
+            if ( f.isDirectory() ) {
+                walk( f.getAbsolutePath() );
+                System.out.println( "Dir:" + f.getAbsoluteFile() );
+            }
+            else {
+                System.out.println( "File:" + f.getAbsoluteFile() );
+            }
+        }
+    }
+    
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub		
+        walk("f:\\SSP\\SampleCode\\FileIO\\실습\\" );
+	}
+
+}
